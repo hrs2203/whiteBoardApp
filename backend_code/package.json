@@ -1,0 +1,11 @@
+{
+  "name": "socket_screen_share",
+  "version": "1.0.0",
+  "description": "Server side code for whiteboard session or code sharing session on sockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hrishabh Pandey",
+  "license": "ISC"
+}
