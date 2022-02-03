@@ -6,30 +6,31 @@ function App() {
   const [chatList, setChatList] = useState([{
     "senderName": "Userx", "message": "Welcome, start your conversation here people."
   }]);
-  const [newLogin, setNewLogin] = useState(""); // reset it to "" for forcd rerender
+  const [newLogin, setNewLogin] = useState("");
   const [previewMessage, setPreviewMessage] = useState("");
+  const [userName, setUserName] = useState("");
 
-  const userName = useRef("");
+  const newUserRef = useRef("");
   const inputRef = useRef(0);
 
   useEffect(() => {
     const focusListener = document.addEventListener("keypress", (e) => {
-      if ((userName.current !== "") && (inputRef !== 0) && (e.key === "/")) {
-        setTimeout(() => {
-          inputRef.current.focus();
-        }, 100);
+      if ((newUserRef.current !== "") && (inputRef !== 0) && (e.key === "/")) {
+        e.preventDefault();
+        setTimeout(() => { inputRef.current.focus() }, 100);
       }
     })
     return () => { document.removeEventListener("keypress", focusListener); }
-  }, [])
+  }, []);
 
+  useEffect(() => { newUserRef.current = userName }, [userName]);
 
   function addMessage(body) { setChatList([body, ...chatList]) }
-
+  
   return (
     <div className="p-6">
       <div className={
-        `absolute top-0 left-0 h-screen w-screen z-1 bg-white ${userName.current !== "" ? "hidden" : ""}`
+        `absolute top-0 left-0 h-screen w-screen z-1 bg-white ${userName !== "" ? "hidden" : ""}`
       }>
         <div className='flex bg-white text-black w-1/2 py-2 px-3 opacity-100 rounded'
           style={{ "marginLeft": "25%", "marginTop": "18%" }}
@@ -39,7 +40,7 @@ function App() {
           <button className='border ml-2 rounded duration-300 hover:text-white hover:bg-black px-3 opacity-100'
             onClick={() => {
               if (newLogin !== "") {
-                userName.current = newLogin;
+                setUserName(newLogin[0].toUpperCase() + newLogin.slice(1))
                 setNewLogin("")
               } else {
                 setPreviewMessage("Enter a valid unique name please");
@@ -53,7 +54,7 @@ function App() {
       </div>
       <nav className='my-3 px-6 flex justify-between'>
         <h1 className='my-2 text-xl'>WhiteBoard Screen</h1>
-        <span className='my-2'>Welcome {userName.current}</span>
+        <span className='my-2'>Welcome {userName}</span>
       </nav>
       <div className='rounded my-3 px-6 flex'>
         <div className='border rounded w-4/6 mr-3 my-2 p-2'> Whiteboard Block, Live soon ;) </div>
@@ -78,7 +79,7 @@ function App() {
             />
             <button className='w-1/6 border ml-2 rounded duration-300 hover:text-white hover:bg-black'
               onClick={() => {
-                addMessage({ message: chatVal, senderName: userName.current });
+                addMessage({ message: chatVal, senderName: userName });
                 setChatVal("");
               }}>Send</button>
           </div>
