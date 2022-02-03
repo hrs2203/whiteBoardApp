@@ -4,17 +4,17 @@ import './App.css';
 function App() {
   const [chatVal, setChatVal] = useState("")
   const [chatList, setChatList] = useState([{
-    "senderName": "userx", "message": "sample message 1"
+    "senderName": "Userx", "message": "Welcome, start your conversation here people."
   }]);
-  const [userName, setUserName] = useState("");
-  const [newLogin, setNewLogin] = useState("");
+  const [newLogin, setNewLogin] = useState(""); // reset it to "" for forcd rerender
   const [previewMessage, setPreviewMessage] = useState("");
+
+  const userName = useRef("");
   const inputRef = useRef(0);
 
   useEffect(() => {
     const focusListener = document.addEventListener("keypress", (e) => {
-      console.log(inputRef, userName, e.key);
-      if ((userName !== '') && (inputRef !== 0) && (e.key === "/")) {
+      if ((userName.current !== "") && (inputRef !== 0) && (e.key === "/")) {
         setTimeout(() => {
           inputRef.current.focus();
         }, 100);
@@ -29,7 +29,7 @@ function App() {
   return (
     <div className="p-6">
       <div className={
-        `absolute top-0 left-0 h-screen w-screen z-1 bg-white ${userName !== "" ? "hidden" : ""}`
+        `absolute top-0 left-0 h-screen w-screen z-1 bg-white ${userName.current !== "" ? "hidden" : ""}`
       }>
         <div className='flex bg-white text-black w-1/2 py-2 px-3 opacity-100 rounded'
           style={{ "marginLeft": "25%", "marginTop": "18%" }}
@@ -38,7 +38,10 @@ function App() {
             onChange={(e) => { setNewLogin(e.target.value) }} placeholder='Enter Name Please' />
           <button className='border ml-2 rounded duration-300 hover:text-white hover:bg-black px-3 opacity-100'
             onClick={() => {
-              if (newLogin !== "") { setUserName(newLogin || "UserUnknown") } else {
+              if (newLogin !== "") {
+                userName.current = newLogin;
+                setNewLogin("")
+              } else {
                 setPreviewMessage("Enter a valid unique name please");
               }
             }}
@@ -50,7 +53,7 @@ function App() {
       </div>
       <nav className='my-3 px-6 flex justify-between'>
         <h1 className='my-2 text-xl'>WhiteBoard Screen</h1>
-        <span className='my-2'>Welcome {userName}</span>
+        <span className='my-2'>Welcome {userName.current}</span>
       </nav>
       <div className='rounded my-3 px-6 flex'>
         <div className='border rounded w-4/6 mr-3 my-2 p-2'> Whiteboard Block, Live soon ;) </div>
@@ -75,7 +78,7 @@ function App() {
             />
             <button className='w-1/6 border ml-2 rounded duration-300 hover:text-white hover:bg-black'
               onClick={() => {
-                addMessage({ message: chatVal, senderName: userName });
+                addMessage({ message: chatVal, senderName: userName.current });
                 setChatVal("");
               }}>Send</button>
           </div>
