@@ -10,7 +10,8 @@
   "author": "Hrishabh Pandey",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
