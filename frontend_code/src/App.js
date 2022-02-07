@@ -12,21 +12,45 @@ function App() {
 
   const newUserRef = useRef("");
   const inputRef = useRef(0);
+  const ws = useRef(null);
 
   useEffect(() => {
+    // web socket connections
+    ws.current = new WebSocket("ws://localhost:8080");
+    ws.current.onopen = () => { console.log("new Connection opened"); }
+    ws.current.onclose = () => { console.log("connection closed"); }
+    ws.current.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      console.log(msg);
+      addMessage(msg);
+    }
+
+    // interactive actions
     const focusListener = document.addEventListener("keypress", (e) => {
       if ((newUserRef.current !== "") && (inputRef !== 0) && (e.key === "/")) {
         e.preventDefault();
         setTimeout(() => { inputRef.current.focus() }, 100);
       }
     })
-    return () => { document.removeEventListener("keypress", focusListener); }
+    return () => {
+      document.removeEventListener("keypress", focusListener);
+      if ((ws.current !== null) && (ws.current.readyState === WebSocket.OPEN)) {
+        ws.current.close()
+      }
+    }
   }, []);
 
   useEffect(() => { newUserRef.current = userName }, [userName]);
 
-  function addMessage(body) { setChatList([body, ...chatList]) }
-  
+  function addMessage(body) { setChatList((prev) => [body, ...prev]) }
+  function sendMessage(newMessage) {
+    if ((ws.current !== null) && (ws.current.readyState === WebSocket.OPEN)) {
+      ws.current.send(JSON.stringify(newMessage));
+    } else {
+      alert("The Connection had be severed, please connect again.");
+    }
+  }
+
   return (
     <div className="p-6">
       <div className={
@@ -79,7 +103,7 @@ function App() {
             />
             <button className='w-1/6 border ml-2 rounded duration-300 hover:text-white hover:bg-black'
               onClick={() => {
-                addMessage({ message: chatVal, senderName: userName });
+                sendMessage({ message: chatVal, senderName: userName });
                 setChatVal("");
               }}>Send</button>
           </div>
