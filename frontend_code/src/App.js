@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     // web socket connections
-    ws.current = new WebSocket("ws://localhost:8080");
+    ws.current = new WebSocket(`ws://${window.location.hostname}:8080`);
     ws.current.onopen = () => { console.log("new Connection opened"); }
     ws.current.onclose = () => { console.log("connection closed"); }
     ws.current.onmessage = (e) => {
