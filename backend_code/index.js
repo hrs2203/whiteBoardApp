@@ -33,7 +33,7 @@ wsServer.on('request', function (request) {
 
     connection.on('message', function (message) {
       if (message.type === 'utf8') {
-        console.log('Received Message: ' + message.utf8Data);
+        // console.log('Received Message: ' + message.utf8Data);
         connectionList.filter(item => item !== null).forEach(point => {
           point.sendUTF(message.utf8Data); // brodcast to every connected port;
         })
