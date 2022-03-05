@@ -33,15 +33,6 @@ app.get("/createVideo", (req, res) => {
   return res.status(200).json({ "sid": newVideoId });
 });
 
-app.get("/endVideo", (req, res) => {
-  try {
-    delete db[req.params.sessionId];
-    return res.status(200).json({ "status": true });
-  } catch (_) {
-    return res.status(500).json({ "status": false });
-  }
-});
-
 app.get("/getDb", (req, res) => { return res.status(200).json({ "data": db }) });
 
 app.listen(8000, () => { console.log("server running at port 8000") })
